@@ -5,19 +5,33 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from datetime import date
 
-file = 'headline_container.txt'
 url = 'https://www.spiegel.de/schlagzeilen/tops/'
 today = date.today()
-
 r = requests.get(url)
 soup = BeautifulSoup(r.text, 'html.parser')
-headlines_spon = soup.findAll('h2', attrs = {'class':"article-title"})
-
+headlines_spon = soup.findAll('span', attrs = {'class':"headline-intro"})
+headline_spon = soup.findAll('span', attrs = {'class':"headline"})
+headlineLinks_spon = soup.findAll('a', attrs = {'class':"more-link"})
+headlines = []
+links = []
+hl= []
 contents = ''
 
-for headline in headlines_spon:
-    contents += headline.text
 
+for link in headlineLinks_spon:
+        links.append('https://www.spiegel.de' + link.get('href'))
+        
+
+for headline in headlines_spon:
+    headlines.append(headline.text)
+
+for i in headline_spon:
+    hl.append(i.text)
+    
+print(hl)
+#print(links[1])
+
+'''
 #Email Settings
 smtp_server = "smtp.gmail.com"
 port = 587  # For starttls
@@ -62,3 +76,5 @@ with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
     server.sendmail(
         sender_email, receiver_email, message.as_string()
     )
+    
+    '''
